@@ -36,7 +36,30 @@ class App extends Component {
         <h1>To-Do list</h1>
         <ul>
           {this.state.tasks.map(task => (
-            <li key={task._id}>{task.title}</li>
+            <li
+              style={{
+                cursor: "pointer",
+                textDecoration: task.isDone ? "line-through" : "none"
+              }}
+              onClick={() => {
+                axios
+                  .post(`${domain}/update`, { id: task._id })
+                  .then(response => {
+                    if (response.status === 200) {
+                      console.log("response", response.data);
+                      this.refreshTasks();
+                    } else {
+                      console.error("An error occurred");
+                    }
+                  })
+                  .catch(err => {
+                    console.error(err);
+                  });
+              }}
+              key={task._id}
+            >
+              {task.title}
+            </li>
           ))}
         </ul>
         <form
