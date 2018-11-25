@@ -34,31 +34,52 @@ class App extends Component {
     return (
       <div className="container">
         <h1>To-Do list</h1>
-        <ul>
+        <ul className="unstyled">
           {this.state.tasks.map(task => (
-            <li
-              style={{
-                cursor: "pointer",
-                textDecoration: task.isDone ? "line-through" : "none"
-              }}
-              onClick={() => {
-                axios
-                  .post(`${domain}/update`, { id: task._id })
-                  .then(response => {
-                    if (response.status === 200) {
-                      console.log("response", response.data);
-                      this.refreshTasks();
-                    } else {
-                      console.error("An error occurred");
-                    }
-                  })
-                  .catch(err => {
-                    console.error(err);
-                  });
-              }}
-              key={task._id}
-            >
-              {task.title}
+            <li key={task._id}>
+              <span
+                className="with-pointer"
+                onClick={() => {
+                  axios
+                    .post(`${domain}/delete`, { id: task._id })
+                    .then(response => {
+                      if (response.status === 200) {
+                        console.log("response", response.data);
+                        this.refreshTasks();
+                      } else {
+                        console.error("An error occurred");
+                      }
+                    })
+                    .catch(err => {
+                      console.error(err);
+                    });
+                }}
+              >
+                ✕
+              </span>{" "}
+              <span
+                style={{
+                  textDecoration: task.isDone ? "line-through" : "none"
+                }}
+                className="with-pointer"
+                onClick={() => {
+                  axios
+                    .post(`${domain}/update`, { id: task._id })
+                    .then(response => {
+                      if (response.status === 200) {
+                        console.log("response", response.data);
+                        this.refreshTasks();
+                      } else {
+                        console.error("An error occurred");
+                      }
+                    })
+                    .catch(err => {
+                      console.error(err);
+                    });
+                }}
+              >
+                {task.title}
+              </span>
             </li>
           ))}
         </ul>
@@ -87,7 +108,7 @@ class App extends Component {
         >
           <input
             type="text"
-            placeholder="Title"
+            placeholder="Titre"
             value={this.state.title}
             onChange={event => {
               this.setState({ title: event.target.value });
