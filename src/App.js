@@ -10,6 +10,25 @@ class App extends Component {
     tasks: []
   };
 
+  refreshTasks() {
+    axios
+      .get(`${domain}/`)
+      .then(response => {
+        if (response.status === 200) {
+          this.setState({ tasks: response.data });
+        } else {
+          console.error("An error occurred");
+        }
+      })
+      .catch(err => {
+        console.error(err);
+      });
+  }
+
+  componentDidMount() {
+    this.refreshTasks();
+  }
+
   render() {
     return (
       <div>
@@ -29,6 +48,9 @@ class App extends Component {
               .then(response => {
                 if (response.status === 200) {
                   console.log("response", response.data);
+                  this.setState({ title: "" }, () => {
+                    this.refreshTasks();
+                  });
                 } else {
                   console.error("An error occurred");
                 }
@@ -50,21 +72,6 @@ class App extends Component {
         </form>
       </div>
     );
-  }
-
-  componentDidMount() {
-    axios
-      .get(`${domain}/`)
-      .then(response => {
-        if (response.status === 200) {
-          this.setState({ tasks: response.data });
-        } else {
-          console.error("An error occurred");
-        }
-      })
-      .catch(err => {
-        console.error(err);
-      });
   }
 }
 
